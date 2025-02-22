@@ -1,0 +1,609 @@
+{
+	"info": {
+		"_postman_id": "d2daa1ce-896b-40d5-bccd-64a9f70105e2",
+		"name": "TRELLO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14726557"
+	},
+	"item": [
+		{
+			"name": "Tworzenie nowej tablicy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.test (\"should return status code 200\", ()=> {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							"\r",
+							"// let responseBody = pm.response.json();\r",
+							"\r",
+							"// pm.test(\"should verify that the board name matches the collection variable\", ()=> {\r",
+							"//     pm.expect(responseBody.name).to.eql(pm.collectionVariables.get(\"nameBoard\"));\r",
+							"// });\r",
+							"\r",
+							"// pm.test(\"should store board ID in collection variable\", () => {\r",
+							"//     pm.expect(responseBody).to.have.property(\"id\");\r",
+							"//     pm.collectionVariables.set(\"idBoard\", responseBody.id);\r",
+							"//     console.log(responseBody.id);\r",
+							"// })\r",
+							"\r",
+							"\r",
+							"// Test 1: Sprawdzenie statusu odpowiedzi\r",
+							"pm.test(\"should return status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Deklarowanie zmiennej responseBody tylko raz\r",
+							"var responseBody;\r",
+							"\r",
+							"try {\r",
+							"    // Jeśli odpowiedź jest poprawnym JSON-em, przypisujemy ją do zmiennej\r",
+							"    responseBody = pm.response.json();\r",
+							"} catch (e) {\r",
+							"    // W przypadku błędu, jeśli odpowiedź nie jest JSON-em, logujemy tekst odpowiedzi\r",
+							"    console.log(\"Response is not a valid JSON:\", pm.response.text());\r",
+							"    responseBody = {}; // Zapewniamy, że responseBody będzie obiektem, nawet w przypadku błędu\r",
+							"}\r",
+							"\r",
+							"// Test 2: Weryfikacja, czy nazwa tablicy odpowiada zmiennej kolekcji\r",
+							"pm.test(\"should verify that the board name matches the collection variable\", () => {\r",
+							"    pm.expect(responseBody.name).to.eql(pm.collectionVariables.get(\"nameBoard\"));\r",
+							"});\r",
+							"\r",
+							"// Test 3: Przechowywanie ID tablicy w zmiennej kolekcji\r",
+							"pm.test(\"should store board ID in collection variable\", () => {\r",
+							"    pm.expect(responseBody).to.have.property(\"id\");\r",
+							"    pm.collectionVariables.set(\"idBoard\", responseBody.id);\r",
+							"    console.log(responseBody.id);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "22-22-22-22",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}boards/?name={{nameBoard}}&key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}boards"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{nameBoard}}"
+						},
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie istniejących tablic",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test (\"should return status code 200\", ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should verify param closed has value equal true\", () => {\r",
+							"    responseBody.map(items => {\r",
+							"        pm.expect(items.name).to.be.a(\"string\");\r",
+							"    })\r",
+							"})\r",
+							"pm.test(\"should listed all id boards\", () => {\r",
+							"    responseBody.map (list => {\r",
+							"        console.log(list.id);\r",
+							"    })\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}members/me/boards?key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}members"
+					],
+					"path": [
+						"me",
+						"boards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie nowej listy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should verify status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should verify nameList matches the collection variable\", () => {\r",
+							"    pm.expect(responseBody.name).to.eql(pm.collectionVariables.get(\"nameList\"));\r",
+							"})\r",
+							"\r",
+							"pm.test(\"should create idList in collection variable\", () => {\r",
+							"    pm.collectionVariables.set(\"idList\", responseBody.id);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}lists?key={{keyTrello}}&token={{tokenTrello}}&name={{nameList}}&idBoard={{idBoard}}",
+					"host": [
+						"{{baseUrl}}lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						},
+						{
+							"key": "name",
+							"value": "{{nameList}}"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{idBoard}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie istniejących list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should verify code status 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should listed all lis id\", () => {\r",
+							"    let responseErrorVisual = responseBody.filter(obj => obj.name === \"visual error\");\r",
+							"    pm.expect(responseErrorVisual.length).to.be.greaterThan(0, \"Nie znaleziono obiektów z name: 'visual error'\");\r",
+							"    console.log(responseErrorVisual);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}boards/{{idBoard}}/lists?key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}boards"
+					],
+					"path": [
+						"{{idBoard}}",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie nowych kart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should verify status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should verify name Card matches the collection variable\", () =>{\r",
+							"    pm.expect(responseBody.name).to.eql(pm.collectionVariables.get(\"nameCard\"));\r",
+							"})\r",
+							"\r",
+							"pm.test(\"create new idCard as collection variable\", () => {\r",
+							"    pm.collectionVariables.set(\"idCard\", responseBody.id);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}cards?idList={{idList}}&key={{keyTrello}}&token={{tokenTrello}}&name={{nameCard}}",
+					"host": [
+						"{{baseUrl}}cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{idList}}"
+						},
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						},
+						{
+							"key": "name",
+							"value": "{{nameCard}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pokazywanie istniejących kart w liscie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should verify status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should listed all card in the list\", () => {\r",
+							"    responseBody.map(items => {\r",
+							"        console.log(items.id)\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}lists/{{idList}}/cards?key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}lists"
+					],
+					"path": [
+						"{{idList}}",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Zapytanie o swoje ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should verify status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should verify full Name param\", () => {\r",
+							"    pm.expect(responseBody.fullName).to.eql(\"Dominik Kopczynski\");\r",
+							"    console.log(responseBody.fullName);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}members/me?key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}members"
+					],
+					"path": [
+						"me"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Zmiana nazwy listy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"should verify status code 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"should verify name matches the collection variable\", ()=> {\r",
+							"    pm.expect(responseBody.name).to.eql(pm.collectionVariables.get(\"changeNameList\"))\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}lists/{{idList}}?key={{keyTrello}}&token={{tokenTrello}}&name={{changeNameList}}",
+					"host": [
+						"{{baseUrl}}lists"
+					],
+					"path": [
+						"{{idList}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						},
+						{
+							"key": "name",
+							"value": "{{changeNameList}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Archiwizowanie listy tablicy",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}lists/{{idList}}?closed=true&key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}lists"
+					],
+					"path": [
+						"{{idList}}"
+					],
+					"query": [
+						{
+							"key": "closed",
+							"value": "true"
+						},
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie karty z listy",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}cards/{{idCard}}?key={{keyTrello}}&token={{tokenTrello}}",
+					"host": [
+						"{{baseUrl}}cards"
+					],
+					"path": [
+						"{{idCard}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{keyTrello}}"
+						},
+						{
+							"key": "token",
+							"value": "{{tokenTrello}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "nameBoard",
+			"value": "tablicaAPI",
+			"type": "string"
+		},
+		{
+			"key": "idBoard",
+			"value": ""
+		},
+		{
+			"key": "nameList",
+			"value": "visual error",
+			"type": "string"
+		},
+		{
+			"key": "idList",
+			"value": ""
+		},
+		{
+			"key": "nameCard",
+			"value": "failed",
+			"type": "string"
+		},
+		{
+			"key": "idCard",
+			"value": ""
+		},
+		{
+			"key": "changeNameList",
+			"value": "sanity check",
+			"type": "string"
+		}
+	]
+}
